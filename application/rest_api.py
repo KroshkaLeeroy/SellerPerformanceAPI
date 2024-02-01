@@ -243,11 +243,18 @@ class AddRequestToPull(Resource):
 class DownloadReport(Resource):
     def get(self, email, uid):
         try:
-            # Получение данных из запроса
-            path = controller.get_request_by_id(email, uid)
-            logging.info(path)
-            if path:
-                return send_file(path, as_attachment=True)
+            relative_path = controller.get_request_by_id(email, uid)
+            logging.info(relative_path)
+
+            if relative_path:
+                # Получение абсолютного пути
+                absolute_path = os.path.abspath(relative_path)
+
+                # Проверка существования файла
+                if os.path.exists(absolute_path):
+                    return send_file(absolute_path, as_attachment=True)
+                else:
+                    return {'message': f'File not found at path: {absolute_path}'}, 404
             else:
                 return {'message': 'Report not found or not ready for download.'}, 404
 
