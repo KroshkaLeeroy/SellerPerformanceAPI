@@ -245,6 +245,7 @@ class DownloadReport(Resource):
         try:
             # Получение данных из запроса
             path = controller.get_request_by_id(email, uid)
+            logging.info(path)
             if path:
                 return send_file(path, as_attachment=True)
             else:
