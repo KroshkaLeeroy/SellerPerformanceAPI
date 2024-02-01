@@ -1,8 +1,8 @@
 import datetime
 
-from .utils import get_token, get_list_of_ids, split_list, get_uuid, check_uuid_status, download_file, \
+from main_structure.download_folder.utils import get_token, get_list_of_ids, split_list, get_uuid, check_uuid_status, download_file, \
     ensure_directory_exists, delete_directory
-from .utils import logging, os
+from main_structure.download_folder.utils import logging, os
 import time
 
 

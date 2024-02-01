@@ -2,9 +2,9 @@ import os.path
 from collections import defaultdict
 import pandas as pd
 
-from .utils import get_analytics, logging, ensure_directory_exists
-from ..download_folder.download_data import DownloadZip
-from ..read_zip_folder.read_data import ReadAllFromZip
+from main_structure.merger_reports.utils import get_analytics, logging, ensure_directory_exists
+from main_structure.download_folder.download_data import DownloadZip
+from main_structure.read_zip_folder.read_data import ReadAllFromZip
 
 PATH_TO_REPORTS = "reports"
 

@@ -8,7 +8,7 @@ from flask import send_file
 from flask_restx import Api, Resource
 from threading import Thread
 from main_structure import MergerReports, logging
-from config import DEBUG, URL_TO_API
+from application.config import DEBUG, URL_TO_API
 
 app = Flask(__name__)
 api = Api(app)

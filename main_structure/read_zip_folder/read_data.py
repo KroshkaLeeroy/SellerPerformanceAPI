@@ -1,4 +1,4 @@
-from .utils import get_file_names, os, logging, convert_from_zip_to_list, convert_from_string_to_int
+from main_structure.read_zip_folder.utils import get_file_names, os, logging, convert_from_zip_to_list, convert_from_string_to_int
 
 
 class ReadAllFromZip:
