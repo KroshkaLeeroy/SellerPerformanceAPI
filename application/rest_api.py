@@ -13,7 +13,7 @@ from application.config import DEBUG, URL_TO_API
 app = Flask(__name__)
 api = Api(app)
 
-app.config.from_object('config')
+app.config.from_object('application.config')
 
 
 def read():
