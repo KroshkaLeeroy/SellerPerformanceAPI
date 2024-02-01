@@ -249,6 +249,7 @@ class DownloadReport(Resource):
             if relative_path:
                 # Получение абсолютного пути
                 absolute_path = os.path.abspath(relative_path)
+                logging.info(f'абсолютный путь {absolute_path}')
 
                 # Проверка существования файла
                 if os.path.exists(absolute_path):
