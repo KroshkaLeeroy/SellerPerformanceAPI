@@ -1,55 +1,34 @@
-import datetime
+import os
 import time
 
+from main_structure.new.merger.merger import Merger
+from main_structure.new.utils import read_json
+from application.utils import load_queue, save_queue, update_user_query_in_history
 
-class RequestsController:
+
+class ControllerRequests:
     def __init__(self):
-        self.requests_pull = []
+        self.file_name = 'queue.json'
+        self.queue = load_queue(self.file_name)
 
     def main_cycle(self):
         while True:
-            self.load_from_db()
-            for request in self.requests_pull:
-                status = request.request_status
-                if status == 'need_to_process':
-                    print(f'!!! Отчет №{request.id} от {request.login} в процессе скачивания')
-                    # main_merger = MergerReports(
-                    #     request.date_from,
-                    #     request.date_to,
-                    #     request.client_id_performance,
-                    #     request.api_key_performance,
-                    #     request.client_id_seller,
-                    #     request.api_key_seller,
-                    #     request.login,
-                    #     debug=True
-                    # )
-                    # main_merger.start_download()
-                    # merger_status = main_merger.merge_reports()
-                    time.sleep(5)
-                    request.request_status = 'ready_to_download'
-                    request.path_to = request.login + '/маршрут нахуй'
-
-                    db.session.commit()
-                elif status == 'ready_to_download':
-                    print(f'Отчет №{request.id} от {request.login} готов к скачиванию')
-                elif status == 'some_error':
-                    print(f'Отчет №{request.id} от {request.login} ошибки обработки отчетов')
-            time.sleep(20)
-
-    def add_request(self, data):
-        request = Request(
-            login=data['login'],
-            api_key_seller=data['api_key_seller'],
-            client_id_seller=data['client_id_seller'],
-            api_key_performance=data['api_key_performance'],
-            client_id_performance=data['client_id_performance'],
-            date_from=data['date_from'],
-            date_to=data['date_to'],
-            time_start=datetime.datetime.now(),
-        )
-        db.session.add(request)
-        db.session.commit()
-
-    def load_from_db(self):
-        with app.app_context():
-            self.requests_pull = Request.query.filter_by(request_status='need_to_process').all()
+            if not self.queue.is_empty():
+                current_request = self.queue.dequeue()
+                merger = Merger(
+                    current_request['date_from'],
+                    current_request['date_to'],
+                    current_request['perf_id'],
+                    current_request['perf_api'],
+                    current_request['seller_id'],
+                    current_request['seller_secret'],
+                    current_request['user_id']
+                )
+                merger.run()
+                date = current_request['date_from'] + '_' + current_request['date_to']
+                path = os.path.join('downloads', current_request['user_id'], date, 'stat', 'download', 'main') + '.json'
+                requests_count = read_json(path)['total_requests']
+                update_user_query_in_history('history.json', current_request['user_id'], 'ready', requests_count)
+                save_queue(self.queue, self.file_name)
+            else:
+                time.sleep(30)

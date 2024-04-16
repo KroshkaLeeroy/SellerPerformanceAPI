@@ -1,6 +1,6 @@
 def get_token_params(id_: str, secret: str):
     return {
-        "url": 'https://performance.ozon.ru/api/client/token',
+        "url": 'https://performance.ozon.ru:443/api/client/token',
         "headers": {
             "Content-Type": "application/json",
             "Accept": "application/json"
@@ -31,7 +31,7 @@ def get_list_of_id_params(token: str) -> dict:
 
 def get_uuid_params(token: str, date_from: str, date_to: str, campaigns_id: list) -> dict:
     return {
-        "url": 'https://performance.ozon.ru/api/client/statistics',
+        "url": 'https://performance.ozon.ru:443/api/client/statistics',
         "headers": {
             "Content-Type": "application/json",
             'Authorization': f'Bearer {token}',
