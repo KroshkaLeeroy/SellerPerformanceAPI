@@ -64,13 +64,13 @@ class DownloadReport(Resource):
             return {'status': 'bad request'}, 400
 
 
-@api.route('/download-stats/<uid>/<date_from>/<date_to>/<stat_type>/<file_name>', methods=['GET'])
+@api.route('/download-stats/<uid>/<date_from>/<date_to>/<file_path>', methods=['GET'])
 class DownloadStat(Resource):
-    def get(self, uid, date_from, date_to, stat_type, file_name):
+    def get(self, uid, date_from, date_to,file_path):
         try:
             date = f'{date_from}_{date_to}'
-            path = f'downloads/{uid}/{date}/stat/{stat_type}/{file_name}.json'
-            stat_file = read_json(os.path.abspath(path))
+            path = f'downloads/{uid}/{date}/stat/{file_path}'
+            stat_file = read_json(path)
             return jsonify(stat_file)
         except Exception as e:
             print(e)
