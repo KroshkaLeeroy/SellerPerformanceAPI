@@ -42,7 +42,7 @@ def check_if_query_history_exists(file_name):
     return data
 
 
-def add_user_query_to_history(file_name, query, path=None, status=None, date_created=True):
+def add_user_query_to_history(file_name, query, path=None, status=None, date_created=False):
     data = check_if_query_history_exists(file_name)
     if query['user_id'] not in data['users']:
         data['users'][query['user_id']] = {
