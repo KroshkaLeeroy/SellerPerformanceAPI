@@ -27,7 +27,10 @@ class ControllerRequests:
                 merger.run()
                 date = current_request['date_from'] + '_' + current_request['date_to']
                 path = os.path.join('downloads', current_request['user_id'], date, 'stat', 'download', 'main') + '.json'
-                requests_count = read_json(path)['total_requests']
+                try:
+                    requests_count = read_json(path)['total_requests']
+                except FileNotFoundError:
+                    requests_count = 0
                 update_user_query_in_history('history.json', current_request['user_id'], 'ready', requests_count)
                 save_queue(self.queue, self.file_name)
             else:
