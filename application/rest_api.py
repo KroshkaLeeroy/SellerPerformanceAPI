@@ -69,9 +69,21 @@ class DownloadStat(Resource):
     def get(self, uid, date_from, date_to, stat_type, file_name):
         try:
             date = f'{date_from}_{date_to}'
-            stat_file = read_json(f'downloads/{uid}/{date}/stat/{stat_type}/{file_name}.json')
+            path = f'downloads/{uid}/{date}/stat/{stat_type}/{file_name}.json'
+            stat_file = read_json(os.path.abspath(path))
             return jsonify(stat_file)
         except Exception as e:
             print(e)
             return {'status': 'bad request'}, 400
 
+@api.route('/list-stats-folder/<uid>/<date_from>/<date_to>', methods=['GET'])
+class DownloadStat(Resource):
+    def get(self, uid, date_from, date_to):
+        try:
+            date = f'{date_from}_{date_to}'
+            path = f'downloads/{uid}/{date}/stat'
+            stat_file = os.listdir(os.path.abspath(path))
+            return jsonify(stat_file)
+        except Exception as e:
+            print(e)
+            return {'status': 'bad request'}, 400
