@@ -77,7 +77,7 @@ class DownloadStat(Resource):
             return {'status': 'bad request'}, 400
 
 @api.route('/list-stats-folder/<uid>/<date_from>/<date_to>', methods=['GET'])
-class DownloadStat(Resource):
+class CheckStat(Resource):
     def get(self, uid, date_from, date_to):
         try:
             date = f'{date_from}_{date_to}'
