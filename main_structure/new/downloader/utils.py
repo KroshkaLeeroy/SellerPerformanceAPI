@@ -38,8 +38,8 @@ def get_list_of_ids(token: str) -> None | Tuple:
         search_promo = [campaign["id"] for campaign in json_dict if campaign["advObjectType"] == "SEARCH_PROMO"]
         return True, sku, search_promo
     except Exception as e:
-        print((str(type(e).__name__), str(e), response.json()))
-        return False, (str(type(e).__name__), str(e), response.json())
+        print((str(type(e).__name__), str(e), response.text))
+        return False, (str(type(e).__name__), str(e), response.text)
 
 
 @time_decorator
@@ -60,8 +60,8 @@ def get_uuid_count(token: str, date_from: str, date_to: str, campaigns_id: list)
         response = requests.post(url=params["url"], headers=params["headers"], json=params["params"])
         return True, response.json()["UUID"]
     except Exception as e:
-        print((str(type(e).__name__), str(e), response.json()))
-        return False, (str(type(e).__name__), str(e), response.json())
+        print((str(type(e).__name__), str(e), response.text))
+        return False, (str(type(e).__name__), str(e), response.text)
 
 
 @time_decorator
@@ -82,8 +82,8 @@ def check_uuid_status_count(uuid: str, token: str) -> str:
         else:
             return json_response
     except Exception as e:
-        print((str(type(e).__name__), str(e), response.json()))
-        return str(str(type(e).__name__), str(e), response.json())
+        print((str(type(e).__name__), str(e), response.text))
+        return str(str(type(e).__name__), str(e), response.text)
 
 
 def ensure_directory_exists(directory_path):

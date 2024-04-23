@@ -11,7 +11,7 @@ from application.config import ADMIN_KEY
 import logging
 
 
-logging.basicConfig(filename='log.txt', filemode='a', level=logging.INFO)
+logging.basicConfig(filename='log.txt', filemode='a')
 
 app = Flask(__name__)
 api = Api(app)
@@ -91,10 +91,17 @@ class DeleteStatus(Resource):
         try:
             if uid == ADMIN_KEY:
                 data = check_if_query_history_exists('history.json')
-                data['users'][user_id]['history'].pop(int(status_id))
-                write_json(data, 'history.json')
-                return {'status': 'ok'}, 200
-            return {'status': 'bad request'}, 400
+                find = False
+                for index in data['users'][user_id]['history']:
+                    if index['status_id'] == status_id:
+                        data['users'][user_id]['history'].remove(index)
+                        find = True
+                        break
+                if find:
+                    write_json(data, 'history.json')
+                    return {'status': 'ok'}, 200
+                return {'status': 'index not found'}, 400
+            return {'status': 'invalid admin key'}, 400
         except Exception as e:
             print(e)
-            return {'status': 'bad request'}, 400
+            return {'status': 'error'}, 400
