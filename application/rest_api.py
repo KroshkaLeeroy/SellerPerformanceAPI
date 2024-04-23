@@ -73,6 +73,7 @@ class PathFiles(Resource):
             if uid == ADMIN_KEY:
                 path = path.replace('*', '/')
                 stat_file = os.listdir(os.path.abspath(path))
+                stat_file = sorted(stat_file)
                 return jsonify(stat_file)
             return {'status': 'bad request'}, 400
         except Exception as e:
