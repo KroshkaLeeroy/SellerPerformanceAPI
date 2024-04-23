@@ -71,7 +71,7 @@ class PathFiles(Resource):
     def get(self, uid, path):
         try:
             if uid == ADMIN_KEY:
-                path = path.replace('*', '/')
+                path = path.replace('*', '/').replace('%2F', '/')
                 stat_file = os.listdir(os.path.abspath(path))
                 stat_file = sorted(stat_file)
                 return jsonify(stat_file)
