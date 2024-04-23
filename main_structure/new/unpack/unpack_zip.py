@@ -24,7 +24,7 @@ class ZipUnpack:
             'folder_create': ensure_directory_exists(self.inf_folder_stat),
         }
 
-        write_json(self.inf_initial_data, self.inf_folder_stat + '\\1_initial.json')
+        write_json(self.inf_initial_data, os.path.join(self.inf_folder_stat, '1_initial.json'))
 
         self.inf_open_zip = {
             'success': False,
@@ -91,8 +91,7 @@ class ZipUnpack:
                             self.inf_open_zip[type_]['history'].append(temp)
                             self.inf_open_zip[type_]['counter_zip'] += 1
                             self.inf_open_zip[type_]['counter_csv'] += 1
-                write_json(self.inf_open_zip, self.inf_folder_stat + '\\2_open_zip.json')
-
+                write_json(self.inf_open_zip, os.path.join(self.inf_folder_stat, '2_open_zip.json'))
             sku_dict = self.inf_open_zip['SKU']
             promo_dict = self.inf_open_zip['PROMO']
 
@@ -121,7 +120,7 @@ class ZipUnpack:
         self.inf_open_zip['time'] = time_info
         self.inf_open_zip['success'] = status
         self.inf_open_zip['error_text'] = value
-        write_json(self.inf_open_zip, self.inf_folder_stat + '\\2_open_zip.json')
+        write_json(self.inf_open_zip, os.path.join(self.inf_folder_stat, '2_open_zip.json'))
 
         self.inf_total_report['success_epoch']['initial_data'] = self.inf_initial_data['success']
         self.inf_total_report['success_epoch']['open_zip'] = self.inf_open_zip['success']
@@ -130,4 +129,4 @@ class ZipUnpack:
         status_2 = self.inf_total_report['success_epoch']['open_zip']
         self.inf_total_report['success'] = all((status_1, status_2))
 
-        write_json(self.inf_total_report, self.inf_folder_stat + '\\main.json')
+        write_json(self.inf_total_report, os.path.join(self.inf_folder_stat, 'main.json'))

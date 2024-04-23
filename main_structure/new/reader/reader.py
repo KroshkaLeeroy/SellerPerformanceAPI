@@ -27,7 +27,7 @@ class Reader:
             'inf_promo_process': self.inf_promo_process,
         }
 
-        write_json(self.inf_initial_data, self.inf_folder_stat + '\\1_initial.json')
+        write_json(self.inf_initial_data, os.path.join(self.inf_folder_stat, '1_initial.json'))
 
     def run(self):
         sku = self.read_files_sku()
@@ -40,7 +40,7 @@ class Reader:
             'inf_promo_process': self.inf_promo_process,
         }
 
-        write_json(self.inf_total, self.inf_folder_stat + '\\main.json')
+        write_json(self.inf_total, os.path.join(self.inf_folder_stat, 'main.json'))
 
         return sku, promo
 
@@ -76,7 +76,7 @@ class Reader:
         self.inf_promo_process['success'] = all(
             [success['success'] for success in self.inf_promo_process['read_history']])
 
-        write_json(self.inf_promo_process, self.inf_folder_stat + '\\3_read_promo.json')
+        write_json(self.inf_promo_process, os.path.join(self.inf_folder_stat, '3_read_promo.json'))
 
         return merge_data
 
@@ -111,7 +111,7 @@ class Reader:
 
         self.inf_sku_process['success'] = all([success['success'] for success in self.inf_sku_process['read_history']])
 
-        write_json(self.inf_sku_process, self.inf_folder_stat + '\\2_read_sku.json')
+        write_json(self.inf_sku_process, os.path.join(self.inf_folder_stat, '2_read_sku.json'))
 
         return merge_data
 

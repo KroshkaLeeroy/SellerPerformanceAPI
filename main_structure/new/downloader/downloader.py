@@ -28,7 +28,7 @@ class DownloadZip:
 
         self.set_up()
 
-        write_json(self.inf_initial_data, self.files_path_report_stat + '\\1_initial.json')
+        write_json(self.inf_initial_data, os.path.join(self.files_path_report_stat, '1_initial.json'))
 
     def set_up(self):
         self.UUID_GET_START_TIMER = 5
@@ -156,7 +156,7 @@ class DownloadZip:
         self.inf_getting_token['token'] = value
         token = value
 
-        write_json(self.inf_getting_token, self.files_path_report_stat + '\\2_token.json')
+        write_json(self.inf_getting_token, os.path.join(self.files_path_report_stat, '2_token.json'))
 
         result, time_info = get_list_of_ids(token)
 
@@ -169,7 +169,7 @@ class DownloadZip:
 
         self.inf_getting_list_of_IDs['IDs_list'] = {'SKU': value_1, 'PROMO': value_2}
 
-        write_json(self.inf_getting_list_of_IDs, self.files_path_report_stat + '\\3_listIDs.json')
+        write_json(self.inf_getting_list_of_IDs, os.path.join(self.files_path_report_stat, '3_listIDs.json'))
 
         for key in ['SKU', 'PROMO']:
             result, time_info = split_list(value_1 if key == 'SKU' else value_2, 10)
@@ -184,19 +184,19 @@ class DownloadZip:
 
             self.inf_getting_split_list[key]['IDs_list'] = value
 
-            write_json(self.inf_getting_split_list, self.files_path_report_stat + f'\\4_split{key}.json')
+            write_json(self.inf_getting_split_list, os.path.join(self.files_path_report_stat, f'4_split{key}.json'))
 
             result, time_info = self.download_loop(value, token, key)
             self.inf_total_downloads_reports['time'][key] = time_info
             self.inf_downloads_reports[key]['succeeded_epoch'] = result
 
-            write_json(self.inf_downloads_reports, self.files_path_report_stat + f'\\5_download{key}.json')
+            write_json(self.inf_downloads_reports, os.path.join(self.files_path_report_stat, f'5_download{key}.json'))
 
         temp = all((self.inf_downloads_reports['SKU']['succeeded'],
                     self.inf_downloads_reports['PROMO']['succeeded']))
         self.inf_total_downloads_reports['status'] = temp
 
-        write_json(self.inf_total_downloads_reports, self.files_path_report_stat + '\\6_total_download.json')
+        write_json(self.inf_total_downloads_reports, os.path.join(self.files_path_report_stat, '6_total_download.json'))
 
     def run(self):
         self.download_files()
@@ -244,7 +244,7 @@ class DownloadZip:
             self.inf_total_results['inf_total_downloads_reports']['status'],
         ))
 
-        write_json(self.inf_total_results, self.files_path_report_stat + '\\main.json')
+        write_json(self.inf_total_results, os.path.join(self.files_path_report_stat, 'main.json'))
 
     @time_decorator
     def download_loop(self, ides, token, type_):

@@ -44,7 +44,7 @@ class Merger:
             'client_report_path': self.client_report_path,
             'date': self.date,
         }
-        write_json(self.inf_initial_data, self.stats_folder_path + '\\1_initial.json')
+        write_json(self.inf_initial_data, os.path.join(self.stats_folder_path, '1_initial.json'))
 
         self.inf_transform_data = {}
 
@@ -66,17 +66,17 @@ class Merger:
         }
 
         info = self.transform(info)
-        write_json(self.inf_transform_data, self.stats_folder_path + '\\2_transform.json')
+        write_json(self.inf_transform_data,  os.path.join(self.stats_folder_path, '2_transform.json'))
 
         total_dict = self.join_analytics(info, sku, promo)
         self.inf_transform_data['join_reports_success'] = True
 
-        write_json(self.inf_total_join, self.stats_folder_path + '\\3_join.json')
+        write_json(self.inf_total_join, os.path.join(self.stats_folder_path, '3_join.json'))
 
         self.create_endless_report(total_dict)
         self.inf_transform_data['create_report_success'] = True
 
-        write_json(self.inf_transform_data, self.stats_folder_path + '\\main.json')
+        write_json(self.inf_transform_data, os.path.join(self.stats_folder_path, 'main.json'))
 
     def create_endless_report(self, data_list):
         try:
