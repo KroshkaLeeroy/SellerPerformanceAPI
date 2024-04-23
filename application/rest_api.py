@@ -103,4 +103,8 @@ class PathFiles(Resource):
             return {'status': 'bad request'}, 400
         except Exception as e:
             print(e)
+            if 'not a directory' in str(e):
+                path = path.replace('*', '/')
+                path = os.path.abspath(path)
+                return send_file(path, as_attachment=True)
             return {'status': str(e)}, 400
