@@ -114,7 +114,8 @@ class DownloadStat(Resource):
         try:
             if uid == ADMIN_KEY:
                 date = f'{date_from}_{date_to}'
-                path = os.path.join('downloads', user_id, date, 'stat', file_path)
+                path = file_path.split('*')
+                path = os.path.join('downloads', user_id, date, 'stat', path)
                 stat_file = read_json(path)
                 return jsonify(stat_file)
             return {'status': 'invalid admin key'}, 400
