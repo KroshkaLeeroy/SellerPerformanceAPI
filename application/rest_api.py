@@ -71,7 +71,8 @@ class PathFiles(Resource):
     def get(self, uid, path):
         try:
             if uid == ADMIN_KEY:
-                path = path.replace('*', '/').replace('%2F', '/')
+                path = path.split('*')
+                path = os.path.join(*path)
                 stat_file = os.listdir(os.path.abspath(path))
                 stat_file = sorted(stat_file)
                 return jsonify(stat_file)
@@ -113,7 +114,7 @@ class DownloadStat(Resource):
         try:
             if uid == ADMIN_KEY:
                 date = f'{date_from}_{date_to}'
-                path = f'downloads/{user_id}/{date}/stat/{file_path}'
+                path = os.path.join('downloads', user_id, date, 'stat', file_path)
                 stat_file = read_json(path)
                 return jsonify(stat_file)
             return {'status': 'invalid admin key'}, 400
