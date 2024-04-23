@@ -8,6 +8,10 @@ from application.request_controller import ControllerRequests
 from application.utils import add_user_query_to_history, check_if_query_history_exists
 from main_structure.new.utils import read_json
 from application.config import ADMIN_KEY
+import logging
+
+
+logging.basicConfig(filename='log.txt', filemode='a', level=logging.INFO)
 
 app = Flask(__name__)
 api = Api(app)
