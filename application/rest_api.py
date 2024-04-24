@@ -95,7 +95,7 @@ class DeleteStatus(Resource):
                 data = check_if_query_history_exists('history.json')
                 find = False
                 for index in data['users'][user_id]['history']:
-                    if index['status_id'] == status_id:
+                    if index['status_id'] == int(status_id):
                         data['users'][user_id]['history'].remove(index)
                         find = True
                         break

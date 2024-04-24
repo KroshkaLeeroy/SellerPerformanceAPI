@@ -66,7 +66,7 @@ class Merger:
         }
 
         info = self.transform(info)
-        write_json(self.inf_transform_data,  os.path.join(self.stats_folder_path, '2_transform.json'))
+        write_json(self.inf_transform_data, os.path.join(self.stats_folder_path, '2_transform.json'))
 
         total_dict = self.join_analytics(info, sku, promo)
         self.inf_transform_data['join_reports_success'] = True
@@ -261,9 +261,21 @@ class Merger:
         return main_list
 
     def transform(self, analytics):
+
+        list_ = []
+
+        for info in analytics:
+            try:
+                uid = info["dimensions"][0]["id"]
+                list_.append(uid)
+            except Exception as e:
+                print("Cannot take uid from analytics", str(type(e).__name__), str(e))
+                uid = info
+            list_.append(uid)
+
         self.inf_transform_data.update({
             'success': False,
-            'all_uid': [info["dimensions"][0]["id"] for info in analytics],
+            'all_uid': list_,
             'history': []
         })
 
