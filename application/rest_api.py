@@ -106,7 +106,7 @@ class DeleteStatus(Resource):
             return {'status': 'invalid admin key'}, 400
         except Exception as e:
             print(e)
-            return {'status': 'error'}, 400
+            return {'status': str(type(e).__name__, str(e))}, 400
 
 @api.route('/<uid>/<user_id>/<date_from>/<date_to>/<file_path>', methods=['GET'])
 class DownloadStat(Resource):
