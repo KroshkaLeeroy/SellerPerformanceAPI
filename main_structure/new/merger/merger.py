@@ -85,7 +85,7 @@ class Merger:
 
             title_list = ['Наименование', 'Ozon ID', 'Показы', 'CTR',
                           'Клики', 'Заказано товаров', 'Заказано на сумму',
-                          'Трафареты', 'Продвижение в поиске', 'Ср. цена продажи', 'ДРР', 'Комментарий']
+                          'Трафареты', 'Продвижение в поиске', 'Ср. цена продажи', 'ДРР\n%', 'Комментарий']
 
             title_cell_format = workbook.add_format({
                 'bold': True,
@@ -123,6 +123,38 @@ class Merger:
                 'num_format': '#,##0.00'
             })
 
+            DRR_cell_format = workbook.add_format({
+                'bold': True,
+                'align': 'center',
+                'valign': 'vcenter',
+                'num_format': '#,##0.00'
+            })
+
+            conditional_1_DRR_cell_format = workbook.add_format({
+                'align': 'center',
+                'valign': 'vcenter',
+                'bg_color': '#D9D9D9',
+                'num_format': '#,##0.00'
+            })
+            conditional_2_DRR_cell_format = workbook.add_format({
+                'align': 'center',
+                'valign': 'vcenter',
+                'bg_color': '#84CD73',
+                'num_format': '#,##0.00'
+            })
+            conditional_3_DRR_cell_format = workbook.add_format({
+                'align': 'center',
+                'valign': 'vcenter',
+                'bg_color': '#F7EB7B',
+                'num_format': '#,##0.00'
+            })
+            conditional_4_DRR_cell_format = workbook.add_format({
+                'align': 'center',
+                'valign': 'vcenter',
+                'bg_color': '#E25B45',
+                'num_format': '#,##0.00'
+            })
+
             pixels = [500, 100, 80, 50, 60, 70, 95, 95, 105, 80, 70, 500]
 
             formulas = [
@@ -133,8 +165,8 @@ class Merger:
                 ['G1', '=SUM(G3:G100000)', value_cell_format],
                 ['H1', '=SUM(H3:H100000)', value_cell_format],
                 ['I1', '=SUM(I3:I100000)', value_cell_format],
-                ['J1', '=AVERAGE(J3:J100000)', value_cell_format],
-                ['K1', '=AVERAGE(K3:K100000)', summary_cell_format],
+                ['J1', '', value_cell_format],
+                ['K1', '=(H1+I1)/G1*100', DRR_cell_format],
             ]
 
             for column, formula, format in formulas:
@@ -144,9 +176,22 @@ class Merger:
                 worksheet.write(1, index, title_column, title_cell_format)
                 worksheet.set_column_pixels(index, index, pixels[index])
 
-            worksheet.set_row_pixels(1, 55)
+            worksheet.set_row_pixels(1, 75)
             worksheet.autofilter('A2:K100000')
             worksheet.freeze_panes(2, 0)
+
+            worksheet.conditional_format('K3:K10000',
+                                         {'type': 'cell', 'criteria': '=', 'value': 0,
+                                          'format': conditional_1_DRR_cell_format})
+            worksheet.conditional_format('K3:K10000',
+                                         {'type': 'cell', 'criteria': '<=', 'value': 20,
+                                          'format': conditional_2_DRR_cell_format})
+            worksheet.conditional_format('K3:K10000',
+                                         {'type': 'cell', 'criteria': '<', 'value': 30,
+                                          'format': conditional_3_DRR_cell_format})
+            worksheet.conditional_format('K3:K10000',
+                                         {'type': 'cell', 'criteria': '>=', 'value': 30,
+                                          'format': conditional_4_DRR_cell_format})
 
             for row_num, text_row in enumerate(data_list, 2):
                 text_row['comment'] = ''
