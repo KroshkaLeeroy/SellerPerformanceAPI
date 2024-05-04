@@ -165,7 +165,7 @@ class Merger:
                 ['G1', '=SUM(G3:G100000)', value_cell_format],
                 ['H1', '=SUM(H3:H100000)', value_cell_format],
                 ['I1', '=SUM(I3:I100000)', value_cell_format],
-                ['J1', '', value_cell_format],
+                ['J1', '=AVERAGE(J3:J100000)', value_cell_format],
                 ['K1', '=(H1+I1)/G1*100', DRR_cell_format],
             ]
 
