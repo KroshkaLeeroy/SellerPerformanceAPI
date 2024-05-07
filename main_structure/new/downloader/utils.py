@@ -39,7 +39,7 @@ def get_list_of_ids(token: str) -> None | Tuple:
         return True, sku, search_promo
     except Exception as e:
         print((str(type(e).__name__), str(e), response.text))
-        return False, (str(type(e).__name__), str(e), response.text)
+        return False, (str(type(e).__name__), str(e)), response.text
 
 
 @time_decorator

@@ -32,6 +32,15 @@ history = {
 }
 
 
+def rebuild_history():
+    data = check_if_query_history_exists('history.json')
+    for user_id in data['users']:
+        for report in data['users'][user_id]['history']:
+            if report['status'] == 'in_line':
+                report['status'] = 'some_error'
+    write_json(data, 'history.json')
+
+
 def check_if_query_history_exists(file_name):
     if os.path.exists(file_name):
         data = read_json(file_name)
@@ -68,7 +77,7 @@ def add_user_query_to_history(file_name, query, path=None, status=None, date_cre
     write_json(data, file_name)
 
 
-def update_user_query_in_history(file_name, user_id, status, request_count):
+def update_user_query_in_history(file_name, user_id, status, request_count=0):
     data = check_if_query_history_exists(file_name)
     data['users'][user_id]['history'][-1]['status'] = status
     data['users'][user_id]['history'][-1]['request_count'] = request_count

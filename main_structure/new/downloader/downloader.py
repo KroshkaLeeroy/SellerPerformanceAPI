@@ -198,53 +198,68 @@ class DownloadZip:
 
         write_json(self.inf_total_downloads_reports, os.path.join(self.files_path_report_stat, '6_total_download.json'))
 
+    def check_files(self):
+        list_dirs = search_files(self.files_path_client)
+
+        len_promo = len([name for name in list_dirs if 'PROMO' in name])
+        len_sku = len([name for name in list_dirs if 'SKU' in name])
+        csv_files = len([name for name in list_dirs if '.csv' in name])
+        summa = len_promo + len_sku + csv_files
+
+        if os.path.isfile(os.path.join(self.files_path_report_stat, f'4_splitPROMO.json')):
+            json_promo = read_json(os.path.join(self.files_path_report_stat, f'4_splitPROMO.json'))
+            json_sku = read_json(os.path.join(self.files_path_report_stat, f'4_splitSKU.json'))
+            return summa == len(json_promo['PROMO']['IDs_list']) + len(json_sku['SKU']['IDs_list'])
+        return False
+
     def run(self):
-        self.download_files()
+        if not self.check_files():
+            self.download_files()
 
-        bool_sum_1 = all((self.inf_getting_split_list['SKU']['succeeded'],
-                          self.inf_getting_split_list['PROMO']['succeeded']))
+            bool_sum_1 = all((self.inf_getting_split_list['SKU']['succeeded'],
+                              self.inf_getting_split_list['PROMO']['succeeded']))
 
-        bool_sum_2 = all((self.inf_downloads_reports['SKU']['succeeded'],
-                          self.inf_downloads_reports['PROMO']['succeeded']))
+            bool_sum_2 = all((self.inf_downloads_reports['SKU']['succeeded'],
+                              self.inf_downloads_reports['PROMO']['succeeded']))
 
-        self.inf_total_results = {
-            'inf_initial_data': {
-                'status': True,
-                'data': self.inf_initial_data,
-            },
-            'inf_getting_token': {
-                'status': self.inf_getting_token['succeeded'],
-                'data': self.inf_getting_token,
-            },
-            'inf_getting_list_of_IDs': {
-                'status': self.inf_getting_list_of_IDs['succeeded'],
-                'data': self.inf_getting_list_of_IDs,
-            },
-            'inf_getting_split_list': {
-                'status': bool_sum_1,
-                'data': self.inf_getting_split_list,
-            },
-            'inf_downloads_reports': {
-                'status': bool_sum_2,
-                'data': self.inf_downloads_reports,
-            },
-            'inf_total_downloads_reports': {
-                'status': self.inf_total_downloads_reports['status'],
-                'data': self.inf_total_downloads_reports,
-            },
-            'total_requests': self.inf_total_downloads_reports['request_counter'],
-        }
+            self.inf_total_results = {
+                'inf_initial_data': {
+                    'status': True,
+                    'data': self.inf_initial_data,
+                },
+                'inf_getting_token': {
+                    'status': self.inf_getting_token['succeeded'],
+                    'data': self.inf_getting_token,
+                },
+                'inf_getting_list_of_IDs': {
+                    'status': self.inf_getting_list_of_IDs['succeeded'],
+                    'data': self.inf_getting_list_of_IDs,
+                },
+                'inf_getting_split_list': {
+                    'status': bool_sum_1,
+                    'data': self.inf_getting_split_list,
+                },
+                'inf_downloads_reports': {
+                    'status': bool_sum_2,
+                    'data': self.inf_downloads_reports,
+                },
+                'inf_total_downloads_reports': {
+                    'status': self.inf_total_downloads_reports['status'],
+                    'data': self.inf_total_downloads_reports,
+                },
+                'total_requests': self.inf_total_downloads_reports['request_counter'],
+            }
 
-        self.inf_total_results['success'] = all((
-            self.inf_total_results['inf_initial_data']['status'],
-            self.inf_total_results['inf_getting_token']['status'],
-            self.inf_total_results['inf_getting_list_of_IDs']['status'],
-            self.inf_total_results['inf_getting_split_list']['status'],
-            self.inf_total_results['inf_downloads_reports']['status'],
-            self.inf_total_results['inf_total_downloads_reports']['status'],
-        ))
+            self.inf_total_results['success'] = all((
+                self.inf_total_results['inf_initial_data']['status'],
+                self.inf_total_results['inf_getting_token']['status'],
+                self.inf_total_results['inf_getting_list_of_IDs']['status'],
+                self.inf_total_results['inf_getting_split_list']['status'],
+                self.inf_total_results['inf_downloads_reports']['status'],
+                self.inf_total_results['inf_total_downloads_reports']['status'],
+            ))
 
-        write_json(self.inf_total_results, os.path.join(self.files_path_report_stat, 'main.json'))
+            write_json(self.inf_total_results, os.path.join(self.files_path_report_stat, 'main.json'))
 
     @time_decorator
     def download_loop(self, ides, token, type_):

@@ -1,6 +1,7 @@
 import os
 import time
-
+import traceback
+import datetime
 from main_structure.new.merger.merger import Merger
 from main_structure.new.utils import read_json
 from application.utils import load_queue, save_queue, update_user_query_in_history
@@ -24,14 +25,28 @@ class ControllerRequests:
                     current_request['seller_secret'],
                     current_request['user_id']
                 )
-                merger.run()
-                date = current_request['date_from'] + '_' + current_request['date_to']
-                path = os.path.join('downloads', current_request['user_id'], date, 'stat', 'download', 'main') + '.json'
                 try:
-                    requests_count = read_json(path)['total_requests']
-                except FileNotFoundError:
-                    requests_count = 0
-                update_user_query_in_history('history.json', current_request['user_id'], 'ready', requests_count)
-                save_queue(self.queue, self.file_name)
+                    merger.run()
+                    date = current_request['date_from'] + '_' + current_request['date_to']
+                    path = os.path.join('downloads', current_request['user_id'], date, 'stat', 'download',
+                                        'main') + '.json'
+                    try:
+                        requests_count = read_json(path)['total_requests']
+                    except FileNotFoundError:
+                        requests_count = 0
+                    update_user_query_in_history('history.json', current_request['user_id'], 'ready', requests_count)
+                    save_queue(self.queue, self.file_name)
+                except Exception:
+                    with open('critical_error.txt', 'a', encoding='utf-8') as file:
+                        text = f'''
+                            Date: {datetime.datetime.now()}
+                            User: {current_request['user_id']}
+                            {traceback.format_exc()}
+                        '''
+                        file.write(text)
+                    update_user_query_in_history('history.json', current_request['user_id'], 'some_error')
+                    save_queue(self.queue, self.file_name)
+
+
             else:
                 time.sleep(30)
