@@ -37,16 +37,18 @@ class ControllerRequests:
                     update_user_query_in_history('history.json', current_request['user_id'], 'ready', requests_count)
                     save_queue(self.queue, self.file_name)
                 except Exception:
+                    text = (f"Date: {datetime.datetime.now()}\n" + f"User: {current_request['user_id']}\n"
+                            + f"{traceback.format_exc()}\n\n")
+
                     with open('critical_error.txt', 'a', encoding='utf-8') as file:
-                        text = f'''
-                            Date: {datetime.datetime.now()}
-                            User: {current_request['user_id']}
-                            {traceback.format_exc()}
-                        '''
                         file.write(text)
+
+                    path = os.path.join(merger.client_folder_path, merger.date, 'error_text.txt')
+
+                    with open(path, 'a', encoding='utf-8') as file:
+                        file.write(text)
+
                     update_user_query_in_history('history.json', current_request['user_id'], 'some_error')
                     save_queue(self.queue, self.file_name)
-
-
             else:
                 time.sleep(30)
