@@ -117,7 +117,7 @@ class DownloadAnyFile(Resource):
         try:
             if uid == ADMIN_KEY:
                 path = file_path.split('*')
-                path = os.path.join(*path)
+                path = os.path.join('downloads', *path)
                 path = os.path.abspath(path)
                 print(path)
                 return send_file(path, as_attachment=True)
