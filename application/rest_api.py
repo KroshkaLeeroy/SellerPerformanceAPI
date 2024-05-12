@@ -62,6 +62,7 @@ class DownloadReport(Resource):
             if not path:
                 return {'status': 'bad request'}, 400
             path = os.path.abspath(path)
+            print(path)
             return send_file(path, as_attachment=True)
         except Exception as e:
             print(e)
@@ -118,6 +119,7 @@ class DownloadAnyFile(Resource):
                 path = file_path.split('*')
                 path = os.path.join(*path)
                 path = os.path.abspath(path)
+                print(path)
                 return send_file(path, as_attachment=True)
             return {'status': 'invalid admin key'}, 400
         except Exception as e:
