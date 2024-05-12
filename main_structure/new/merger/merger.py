@@ -103,6 +103,12 @@ class Merger:
                 'align': 'center',
                 'valign': 'vcenter',
             })
+            DRR_column_cell_format = workbook.add_format({
+                'align': 'center',
+                'valign': 'vcenter',
+                'border_color': 'ffffff',
+                'border': True,
+            })
             number_cell_format = workbook.add_format({
                 'align': 'center',
                 'valign': 'vcenter',
@@ -127,7 +133,8 @@ class Merger:
                 'bold': True,
                 'align': 'center',
                 'valign': 'vcenter',
-                'num_format': '#,##0.00'
+                'num_format': '#,##0.00',
+                'border_color': 'ffffff',
             })
 
             conditional_1_DRR_cell_format = workbook.add_format({
@@ -207,7 +214,7 @@ class Merger:
                         'SKU_count': value_cell_format,
                         'PROMO_count': value_cell_format,
                         'avg_sell': value_cell_format,
-                        'DRR': procent_cell_format,
+                        'DRR': DRR_column_cell_format,
                         'comment': name_cell_format,
                     }
                     if text_column == 'CTR' or text_column == 'DRR':

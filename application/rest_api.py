@@ -110,17 +110,16 @@ class DeleteStatus(Resource):
             print(e)
             return {'status': f"{type(e).__name__}, {e}"}, 400
 
-@api.route('/<uid>/<user_id>/<date_from>/<date_to>/<file_path>', methods=['GET'])
-class DownloadStat(Resource):
-    def get(self, uid, user_id, date_from, date_to,file_path):
+@api.route('/download-any-file/<uid>/<file_path>', methods=['GET'])
+class DownloadAnyFile(Resource):
+    def get(self, uid, file_path):
         try:
             if uid == ADMIN_KEY:
-                date = f'{date_from}_{date_to}'
                 path = file_path.split('*')
-                path = os.path.join('downloads', user_id, date, 'stat', *path)
-                stat_file = read_json(path)
-                return jsonify(stat_file)
+                path = os.path.join(*path)
+                path = os.path.abspath(path)
+                return send_file(path, as_attachment=True)
             return {'status': 'invalid admin key'}, 400
         except Exception as e:
             print(e)
-            return {'status': 'bad request'}, 400
+            return {'status': f'bad request: {type(e).__name__} : {e}'}, 400
