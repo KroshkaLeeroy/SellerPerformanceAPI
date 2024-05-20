@@ -32,11 +32,24 @@ history = {
 }
 
 
-def rebuild_history():
+def rebuild_history_total():
     data = check_if_query_history_exists('history.json')
     for user_id in data['users']:
         for report in data['users'][user_id]['history']:
             if report['status'] == 'in_line':
+                if os.path.exists(report["path"]):
+                    report['status'] = 'ready'
+                else:
+                    report['status'] = 'some_error'
+    write_json(data, 'history.json')
+
+def rebuild_history_user(incom_user_id):
+    data = check_if_query_history_exists('history.json')
+    for report in data['users'][incom_user_id]['history']:
+        if report['status'] == 'in_line':
+            if os.path.exists(report["path"]):
+                report['status'] = 'ready'
+            else:
                 report['status'] = 'some_error'
     write_json(data, 'history.json')
 
