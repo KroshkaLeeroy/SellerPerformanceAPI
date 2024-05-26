@@ -51,8 +51,8 @@ class Merger:
         self.inf_total_join = {}
 
     def run(self):
-        # self.downloader.run()
-        # self.unpacker.run()
+        self.downloader.run()
+        self.unpacker.run()
         sku, promo = self.reader.run()
         self.create_report(sku, promo)
 
