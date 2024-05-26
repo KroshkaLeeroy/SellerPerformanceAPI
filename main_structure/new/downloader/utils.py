@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import shutil
+import traceback
 from typing import Tuple
 
 import requests
@@ -24,8 +25,8 @@ def get_token(client_id: str, client_secret: str) -> Tuple[bool, str] | None:
         token = result.json().get('access_token')
         return True, token
     except Exception as e:
-        print((str(type(e).__name__), str(e), result.json()))
-        return False, str(type(e).__name__, str(e), result.json())
+        print((str(type(e).__name__), str(e), traceback.format_exc()))
+        return False, str(type(e).__name__, str(e), traceback.format_exc())
 
 
 @time_decorator
@@ -38,8 +39,8 @@ def get_list_of_ids(token: str) -> None | Tuple:
         search_promo = [campaign["id"] for campaign in json_dict if campaign["advObjectType"] == "SEARCH_PROMO"]
         return True, sku, search_promo
     except Exception as e:
-        print((str(type(e).__name__), str(e), response.text))
-        return False, (str(type(e).__name__), str(e)), response.text
+        print((str(type(e).__name__), str(e), traceback.format_exc()))
+        return False, (str(type(e).__name__), str(e)), traceback.format_exc()
 
 
 @time_decorator
@@ -60,8 +61,8 @@ def get_uuid_count(token: str, date_from: str, date_to: str, campaigns_id: list)
         response = requests.post(url=params["url"], headers=params["headers"], json=params["params"])
         return True, response.json()["UUID"]
     except Exception as e:
-        print((str(type(e).__name__), str(e), response.text))
-        return False, (str(type(e).__name__), str(e), response.text)
+        print((str(type(e).__name__), str(e), traceback.format_exc()))
+        return False, (str(type(e).__name__), str(e), traceback.format_exc())
 
 
 @time_decorator
@@ -82,8 +83,8 @@ def check_uuid_status_count(uuid: str, token: str) -> str:
         else:
             return json_response
     except Exception as e:
-        print((str(type(e).__name__), str(e), response.text))
-        return str(str(type(e).__name__), str(e), response.text)
+        print((str(type(e).__name__), str(e), traceback.format_exc()))
+        return str(str(type(e).__name__), str(e), traceback.format_exc())
 
 
 def ensure_directory_exists(directory_path):

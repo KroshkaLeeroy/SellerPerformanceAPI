@@ -51,8 +51,8 @@ class Merger:
         self.inf_total_join = {}
 
     def run(self):
-        self.downloader.run()
-        self.unpacker.run()
+        # self.downloader.run()
+        # self.unpacker.run()
         sku, promo = self.reader.run()
         self.create_report(sku, promo)
 
@@ -319,7 +319,7 @@ class Merger:
         for info in analytics:
             try:
                 uid = info["dimensions"][0]["id"]
-                list_.append(uid)
+                # list_.append(uid)
             except Exception as e:
                 print("Cannot take uid from analytics", str(type(e).__name__), str(e))
                 uid = info
@@ -363,3 +363,13 @@ class Merger:
 
         self.inf_transform_data['success'] = all((info['success'] for info in self.inf_transform_data['history']))
         return new_data
+
+
+if __name__ == '__main__':
+    merger = Merger('2024-05-21',
+                    '2024-05-21',
+                    '28259821-1715356787162@advertising.performance.ozon.ru',
+                    '8hAlmXIHZqzydjtgkYA-xm2IPybOqwX3jQJQpzjOjSxjSwWrhs90Zbkivx5AxCrwNTrrqjTjf4R4l2aCnA',
+                    '532801',
+                    '211d898a-a107-40aa-bdee-9e7878304393',)
+    merger.run()

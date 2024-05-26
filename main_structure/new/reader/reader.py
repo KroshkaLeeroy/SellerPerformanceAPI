@@ -138,20 +138,20 @@ class Reader:
         if len(info) > 1:
             file_data['file_contains_data'] = True
             data_from_csv = info.to_dict()
-            for key, company in data_from_csv['sku'].items():
-                if company.isnumeric():
-                    file_data['goods_ids'].append(company)
-                    if company not in merge_data:
-                        merge_data[company] = {'Показы': data_from_csv['Показы'][key],
+            for key, goods_id in data_from_csv['sku'].items():
+                if goods_id.isnumeric():
+                    file_data['goods_ids'].append(goods_id)
+                    if goods_id not in merge_data:
+                        merge_data[goods_id] = {'Показы': data_from_csv['Показы'][key],
                                                'Клики': data_from_csv['Клики'][key],
                                                'Расход': float(
                                                    data_from_csv['Расход, ₽, с НДС'][key].replace(',', '.'))}
                     else:
-                        merge_data[company]['Показы'] += data_from_csv['Показы'][key]
-                        merge_data[company]['Показы'] += data_from_csv['Клики'][key]
-                        merge_data[company]['Показы'] += float(
+                        merge_data[goods_id]['Показы'] += data_from_csv['Показы'][key]
+                        merge_data[goods_id]['Клики'] += data_from_csv['Клики'][key]
+                        merge_data[goods_id]['Расход'] += float(
                             data_from_csv['Расход, ₽, с НДС'][key].replace(',', '.'))
-                elif company == 'Корректировка':
+                elif goods_id == 'Корректировка':
                     file_data['correction_in_file'] = True
                     merge_data['correction'] += float(data_from_csv['Расход, ₽, с НДС'][key].replace(',', '.'))
         file_data['success'] = True
@@ -180,16 +180,16 @@ class Reader:
         data_from_csv = info.to_dict()
         if len(data_from_csv['Ozon ID']) > 1:
             file_data['file_contains_data'] = True
-            for key, company in data_from_csv['Ozon ID'].items():
-                if not pn.isna(company):
-                    company = str(int(company))
-                    file_data['goods_ids'].append(company)
-                    if company not in merge_data:
-                        merge_data[company] = {
+            for key, goods_id in data_from_csv['Ozon ID'].items():
+                if not pn.isna(goods_id):
+                    goods_id = str(int(goods_id))
+                    file_data['goods_ids'].append(goods_id)
+                    if goods_id not in merge_data:
+                        merge_data[goods_id] = {
                             'Расход': float(data_from_csv['Расход, ₽'][key].replace(',', '.')),
                         }
                     else:
-                        merge_data[company]['Расход'] += float(
+                        merge_data[goods_id]['Расход'] += float(
                             data_from_csv['Расход, ₽'][key].replace(',', '.'))
                 if data_from_csv['Дата'][key] == 'Корректировка':
                     file_data['correction_in_file'] = True
