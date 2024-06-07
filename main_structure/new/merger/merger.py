@@ -366,10 +366,7 @@ class Merger:
 
 
 if __name__ == '__main__':
-    merger = Merger('2024-05-21',
-                    '2024-05-21',
-                    '28259821-1715356787162@advertising.performance.ozon.ru',
-                    '8hAlmXIHZqzydjtgkYA-xm2IPybOqwX3jQJQpzjOjSxjSwWrhs90Zbkivx5AxCrwNTrrqjTjf4R4l2aCnA',
-                    '532801',
-                    '211d898a-a107-40aa-bdee-9e7878304393',)
+    merger = Merger('2024-06-06',
+                    '2024-06-06',
+                    )
     merger.run()

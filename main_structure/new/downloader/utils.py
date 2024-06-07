@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import shutil
 import traceback
-from typing import Tuple
+from typing import Tuple, Any
 
 import requests
 from main_structure.new.utils import *
@@ -10,7 +10,7 @@ from main_structure.new.downloader.config import *
 
 
 @time_decorator
-def get_token(client_id: str, client_secret: str) -> Tuple[bool, str] | None:
+def get_token(client_id: str, client_secret: str) -> Tuple[bool, tuple] | None:
     get_dict = get_token_params(client_id, client_secret)
 
     url = get_dict.get("url")
@@ -18,29 +18,27 @@ def get_token(client_id: str, client_secret: str) -> Tuple[bool, str] | None:
     params = get_dict.get("params")
 
     data = json.dumps(params)
-
+    result = requests.post(url=url, headers=headers, data=data)
     try:
-        result = requests.post(url=url, headers=headers, data=data)
-
         token = result.json().get('access_token')
         return True, token
     except Exception as e:
-        print((str(type(e).__name__), str(e), traceback.format_exc()))
-        return False, str(type(e).__name__, str(e), traceback.format_exc())
+        print((str(type(e).__name__), str(e), traceback.format_exc(), result.text))
+        return False, (str(type(e).__name__, str(e), traceback.format_exc()), result.text)
 
 
 @time_decorator
 def get_list_of_ids(token: str) -> None | Tuple:
     params = get_list_of_id_params(token)
+    response = requests.get(url=params["url"], headers=params["headers"], json=params["params"])
     try:
-        response = requests.get(url=params["url"], headers=params["headers"], json=params["params"])
         json_dict = response.json()["list"]
         sku = [campaign["id"] for campaign in json_dict if campaign["advObjectType"] == "SKU"]
         search_promo = [campaign["id"] for campaign in json_dict if campaign["advObjectType"] == "SEARCH_PROMO"]
         return True, sku, search_promo
     except Exception as e:
-        print((str(type(e).__name__), str(e), traceback.format_exc()))
-        return False, (str(type(e).__name__), str(e)), traceback.format_exc()
+        print((str(type(e).__name__), str(e), traceback.format_exc(), response.text))
+        return False, (str(type(e).__name__), str(e)), (traceback.format_exc(), response.text)
 
 
 @time_decorator
@@ -57,20 +55,20 @@ def get_uuid_count(token: str, date_from: str, date_to: str, campaigns_id: list)
     if len(campaigns_id) == 0:
         return False, 'Received 0 companies'
     params = get_uuid_params(token, date_from, date_to, campaigns_id)
+    response = requests.post(url=params["url"], headers=params["headers"], json=params["params"])
+
     try:
-        response = requests.post(url=params["url"], headers=params["headers"], json=params["params"])
         return True, response.json()["UUID"]
     except Exception as e:
-        print((str(type(e).__name__), str(e), traceback.format_exc()))
-        return False, (str(type(e).__name__), str(e), traceback.format_exc())
+        print((str(type(e).__name__), str(e), traceback.format_exc(), response.text))
+        return False, (str(type(e).__name__), str(e), traceback.format_exc(), response.text)
 
 
 @time_decorator
-def check_uuid_status_count(uuid: str, token: str) -> str:
+def check_uuid_status_count(uuid: str, token: str) -> str | tuple[str, str] | Any:
     params = get_check_uuid_status_params(token, uuid)
-
+    response = requests.get(url=params['url'], headers=params['headers'])
     try:
-        response = requests.get(url=params['url'], headers=params['headers'])
         json_response = response.json()
         if json_response["state"] == "OK":
             return "OK"
@@ -83,8 +81,8 @@ def check_uuid_status_count(uuid: str, token: str) -> str:
         else:
             return json_response
     except Exception as e:
-        print((str(type(e).__name__), str(e), traceback.format_exc()))
-        return str(str(type(e).__name__), str(e), traceback.format_exc())
+        print((str(type(e).__name__), str(e), traceback.format_exc(), response.text))
+        return str(str(type(e).__name__), str(e), traceback.format_exc()), response.text
 
 
 def ensure_directory_exists(directory_path):
