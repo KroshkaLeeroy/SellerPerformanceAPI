@@ -1,8 +1,16 @@
+import copy
 import datetime
 import os
 from collections import deque
 import json
 from main_structure.new.utils import write_json, read_json
+from application.config import ENCRYPTING_PASSWORD
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import padding
+from base64 import urlsafe_b64encode, urlsafe_b64decode
+import os
+import json
 
 TEMP = {
     'date_from': '',
@@ -33,6 +41,7 @@ history = {
 
 
 def rebuild_history_total():
+    print(f'Rebuilding history... {datetime.datetime.now()}')
     data = check_if_query_history_exists('history.json')
     for user_id in data['users']:
         for report in data['users'][user_id]['history']:
@@ -87,6 +96,54 @@ def add_user_query_to_history(file_name, query, path=None, status=None, date_cre
     })
     data['users'][query['user_id']]['last_report_id'] = len(data['users'][query['user_id']]['history']) - 1
     write_json(data, file_name)
+
+
+def decrypt_data(key: bytes, encrypted_json: str):
+    encrypted_data = json.loads(encrypted_json)
+    iv = urlsafe_b64decode(encrypted_data['iv'])
+    cipher_data = urlsafe_b64decode(encrypted_data['data'])
+
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
+    decryptor = cipher.decryptor()
+    padded_data = decryptor.update(cipher_data) + decryptor.finalize()
+
+    # Удаление отступов
+    unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
+    json_data = unpadder.update(padded_data) + unpadder.finalize()
+
+    # Возвращение данных в зависимости от их типа
+    if encrypted_data['type'] == 'json':
+        return json.loads(json_data.decode('utf-8'))
+    elif encrypted_data['type'] == 'string':
+        return json_data.decode('utf-8')
+    else:
+        raise ValueError("Unknown data type")
+
+
+def encrypt_data(key: bytes, data) -> str:
+    iv = os.urandom(16)
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
+    encryptor = cipher.encryptor()
+
+    # Проверка типа данных и сериализация
+    if isinstance(data, dict):
+        json_data = json.dumps(data).encode()
+    elif isinstance(data, str):
+        json_data = data.encode()
+    else:
+        raise ValueError("Data must be a dictionary or a string")
+
+    # Добавление отступов для соответствия блочному шифру
+    padder = padding.PKCS7(algorithms.AES.block_size).padder()
+    padded_data = padder.update(json_data) + padder.finalize()
+
+    encrypted_data = encryptor.update(padded_data) + encryptor.finalize()
+    encrypted_json = {
+        'iv': urlsafe_b64encode(iv).decode('utf-8'),
+        'data': urlsafe_b64encode(encrypted_data).decode('utf-8'),
+        'type': 'json' if isinstance(data, dict) else 'string'
+    }
+    return json.dumps(encrypted_json)
 
 
 def update_user_query_in_history(file_name, user_id, status, request_count=0):

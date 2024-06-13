@@ -6,10 +6,11 @@ from flask_restx import Api, Resource
 from threading import Thread
 from application.request_controller import ControllerRequests
 from application.utils import add_user_query_to_history, check_if_query_history_exists, rebuild_history_total, \
-    rebuild_history_user
+    rebuild_history_user, decrypt_data
 from main_structure.new.utils import read_json, write_json
-from application.config import ADMIN_KEY
+from application.config import ADMIN_KEY, ENCRYPTING_PASSWORD
 import logging
+from flask_apscheduler import APScheduler
 
 
 logging.basicConfig(filename='log.txt', filemode='a')
@@ -19,18 +20,19 @@ api = Api(app)
 
 app.config.from_object('application.config')
 
-rebuild_history_total()
-
 controller = ControllerRequests()
 thread = Thread(target=controller.main_cycle)
 thread.daemon = True
 thread.start()
 
+scheduler = APScheduler()
+scheduler.add_job(id='check_billing', func=rebuild_history_total, trigger='interval', minutes=15)
+scheduler.start()
 
-# TODO: Добавить проверку шифрованного ключа на соответствие секрету
 @api.route('/check-pull/<uid>', methods=['GET'])
 class Pull(Resource):
     def get(self, uid):
+        uid = decrypt_data(ENCRYPTING_PASSWORD, uid)
         data = check_if_query_history_exists('history.json')
         user_pull = data['users'].get(uid)
         if user_pull:
@@ -42,7 +44,7 @@ class Pull(Resource):
 class AddRequest(Resource):
     def post(self):
         data = request.json
-        rebuild_history_user(data['user_id'])
+        data = decrypt_data(ENCRYPTING_PASSWORD, data)
         if data:
             print(data)
             controller.queue.enqueue(data)
@@ -83,11 +85,11 @@ class PathFiles(Resource):
                 return jsonify(stat_file)
             return {'status': 'bad request'}, 400
         except Exception as e:
-            print(e)
-            if 'Not a directory' in str(e):
+            if 'Not a directory' in str(e) or 'Неверно задано имя папки' in str(e):
                 path = path.replace('*', '/')
                 path = os.path.abspath(path)
                 return send_file(path, as_attachment=True)
+            print(e)
             return {'status': str(e)}, 400
 
 
