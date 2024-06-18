@@ -10,7 +10,7 @@ from main_structure.new.downloader.config import *
 
 
 @time_decorator
-def get_token(client_id: str, client_secret: str) -> Tuple[bool, tuple] | None:
+def get_token(client_id: str, client_secret: str) -> tuple[bool, Any] | tuple[bool, str]:
     get_dict = get_token_params(client_id, client_secret)
 
     url = get_dict.get("url")
@@ -24,7 +24,7 @@ def get_token(client_id: str, client_secret: str) -> Tuple[bool, tuple] | None:
         return True, token
     except Exception as e:
         print((str(type(e).__name__), str(e), traceback.format_exc(), result.text))
-        return False, (str(type(e).__name__, str(e), traceback.format_exc()), result.text)
+        return False, f'{type(e).__name__}, {str(e)}, {traceback.format_exc()}, {result.text}'
 
 
 @time_decorator
@@ -38,7 +38,7 @@ def get_list_of_ids(token: str) -> None | Tuple:
         return True, sku, search_promo
     except Exception as e:
         print((str(type(e).__name__), str(e), traceback.format_exc(), response.text))
-        return False, (str(type(e).__name__), str(e)), (traceback.format_exc(), response.text)
+        return False, f'{type(e).__name__}, {str(e)}, {traceback.format_exc()}, {response.text}'
 
 
 @time_decorator

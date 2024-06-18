@@ -13,7 +13,7 @@ import logging
 from flask_apscheduler import APScheduler
 
 
-logging.basicConfig(filename='log.txt', filemode='a')
+logging.basicConfig(filename='log.log', filemode='a')
 
 app = Flask(__name__)
 api = Api(app)

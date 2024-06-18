@@ -45,7 +45,7 @@ def rebuild_history_total():
     data = check_if_query_history_exists('history.json')
     for user_id in data['users']:
         for report in data['users'][user_id]['history']:
-            if report['status'] == 'in_line':
+            if report['status'] == 'in_line' or report['status'] == 'some_error':
                 if os.path.exists(report["path"]):
                     report['status'] = 'ready'
                 else:
