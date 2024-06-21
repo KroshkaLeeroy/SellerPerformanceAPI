@@ -119,11 +119,15 @@ class DeleteStatus(Resource):
             print(e)
             return {'status': f"{type(e).__name__}, {e}"}, 400
 
-@api.route('/download-any-file/<uid>/<file_path>', methods=['GET'])
+@api.route('/download-any-file/<uid>/<date>/<file_path>', methods=['GET'])
 class DownloadAnyFile(Resource):
-    def get(self, uid, file_path):
+    def get(self, uid, date, file_path):
         try:
             if uid == ADMIN_KEY:
+                time_from, time_to = date.split('-')
+                time_from, time_to = time_from.split('.')[::-1], time_to.split('.')[::-1]
+                time_from, time_to = '-'.join(time_from), '-'.join(time_to)
+                file_path = f'{time_from}_{time_to}*{file_path}'
                 path = file_path.split('*')
                 path = os.path.join('downloads', *path)
                 path = os.path.abspath(path)
