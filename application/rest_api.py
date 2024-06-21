@@ -128,6 +128,7 @@ class DownloadAnyFile(Resource):
                 time_from, time_to = time_from.split('.')[::-1], time_to.split('.')[::-1]
                 time_from, time_to = '-'.join(time_from), '-'.join(time_to)
                 file_path = f'{time_from}_{time_to}*{file_path}'
+                print(file_path)
                 path = file_path.split('*')
                 path = os.path.join('downloads', *path)
                 path = os.path.abspath(path)
