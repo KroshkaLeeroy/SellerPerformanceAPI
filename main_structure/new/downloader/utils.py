@@ -38,7 +38,7 @@ def get_list_of_ids(token: str) -> None | Tuple:
         return True, sku, search_promo
     except Exception as e:
         print((str(type(e).__name__), str(e), traceback.format_exc(), response.text))
-        return False, f'{type(e).__name__}, {str(e)}, {traceback.format_exc()}, {response.text}'
+        return False, f'{type(e).__name__}, {str(e)}', f'{traceback.format_exc()}, {response.text}'
 
 
 @time_decorator
@@ -47,7 +47,7 @@ def split_list(list_: list, size: int) -> tuple:
         return True, [list_[i:i + size] for i in range(0, len(list_), size)]
     except Exception as e:
         print((str(type(e).__name__), str(e)))
-        return False, str(type(e).__name__, str(e))
+        return False, (str(type(e).__name__), str(e))
 
 
 @time_decorator
@@ -81,8 +81,8 @@ def check_uuid_status_count(uuid: str, token: str) -> str | tuple[str, str] | An
         else:
             return json_response
     except Exception as e:
-        print((str(type(e).__name__), str(e), traceback.format_exc(), response.text))
-        return str(str(type(e).__name__), str(e), traceback.format_exc()), response.text
+        print(str(type(e).__name__), str(e), traceback.format_exc(), response.text)
+        return str(type(e).__name__), str(e), traceback.format_exc(), response.text
 
 
 def ensure_directory_exists(directory_path):
@@ -107,7 +107,7 @@ def download_file_count(token: str, uuid: str, file_path: str) -> tuple:
             return False, f'Unknowing error while downloading report {file_path}'
     except Exception as e:
         print((str(type(e).__name__), str(e), f'Unknowing error while downloading report {file_path}'))
-        return False, str(str(type(e).__name__), str(e), f'Unknowing error while downloading report {file_path}')
+        return False, (str(type(e).__name__), str(e), f'Unknowing error while downloading report {file_path}')
 
 
 def clear_folder(folder_path):
