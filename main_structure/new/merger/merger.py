@@ -342,6 +342,10 @@ class Merger:
                     DRR = (count / revenue) * 100
                 else:
                     DRR = 0
+                if ordered_units != 0 and analytics[item].get('hits_tocart') != 0:
+                    conv = (ordered_units / (analytics[item].get('hits_tocart') / 100)) * 0.01
+                else:
+                    conv = 0
 
                 main_dict = {"name": analytics[item]['name'],
                              "id": item,
@@ -361,8 +365,7 @@ class Merger:
                              "CTR": CTR,
                              "clicks": clicks,
                              "ordered_units": ordered_units,
-                             'conv': (ordered_units / (
-                                     analytics[item].get('hits_tocart') / 100)) * 0.01 if ordered_units != 0 else 0,
+                             'conv': conv,
                              "revenue": revenue,
                              'SKU_count': SKU_count,  # Трафареты
                              'PROMO_count': PROMO_count,  # Продвижение в поиске

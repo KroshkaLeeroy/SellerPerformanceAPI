@@ -46,7 +46,6 @@ class AddRequest(Resource):
         data = request.json
         data = decrypt_data(ENCRYPTING_PASSWORD, data)
         if data:
-            print(data)
             controller.queue.enqueue(data)
             add_user_query_to_history('history.json', data)
             return {'status': 'ok'}, 200
