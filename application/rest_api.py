@@ -56,6 +56,11 @@ class AddRequest(Resource):
 class DownloadReport(Resource):
     def get(self, uid, date_from, date_to):
         try:
+            date_from = date_from.split('.')[::-1]
+            date_from = '-'.join(date_from)
+            date_to = date_to.split('.')[::-1]
+            date_to = '-'.join(date_to)
+
             history = read_json('history.json')['users'][uid]['history']
             path = None
             for info in history:
