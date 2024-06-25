@@ -82,7 +82,9 @@ class PathFiles(Resource):
     def get(self, uid, path):
         try:
             if uid == ADMIN_KEY:
+                print(path)
                 stat_file = os.listdir(os.path.abspath(path))
+                print(stat_file)
                 stat_file = sorted(stat_file)
                 return jsonify(stat_file)
             return {'status': 'bad request'}, 400
