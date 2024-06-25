@@ -82,15 +82,12 @@ class PathFiles(Resource):
     def get(self, uid, path):
         try:
             if uid == ADMIN_KEY:
-                path = path.split('*')
-                path = os.path.join(*path)
                 stat_file = os.listdir(os.path.abspath(path))
                 stat_file = sorted(stat_file)
                 return jsonify(stat_file)
             return {'status': 'bad request'}, 400
         except Exception as e:
             if 'Not a directory' in str(e) or 'Неверно задано имя папки' in str(e):
-                path = path.replace('*', '/')
                 path = os.path.abspath(path)
                 return send_file(path, as_attachment=True)
             print(e)
@@ -119,7 +116,7 @@ class DeleteStatus(Resource):
             print(e)
             return {'status': f"{type(e).__name__}, {e}"}, 400
 
-@api.route('/download-any-file/<uid>/<date>/<file_path>', methods=['GET'])
+@api.route('/download-any-file/<uid>/<user_id>/<date>/<file_path>', methods=['GET'])
 class DownloadAnyFile(Resource):
     def get(self, uid, date, file_path):
         try:
