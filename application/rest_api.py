@@ -77,20 +77,20 @@ class DownloadReport(Resource):
             return {'status': 'bad request'}, 400
 
 
-@api.route('/dev/<uid>/<path>', methods=['GET'])
+@api.route('/dev/<uid>/<path:file_path>', methods=['GET'])
 class PathFiles(Resource):
-    def get(self, uid, path):
+    def get(self, uid, file_path):
         try:
             if uid == ADMIN_KEY:
-                print(path)
-                stat_file = os.listdir(os.path.abspath(path))
+                print(file_path)
+                stat_file = os.listdir(os.path.abspath(file_path))
                 print(stat_file)
                 stat_file = sorted(stat_file)
                 return jsonify(stat_file)
             return {'status': 'bad request'}, 400
         except Exception as e:
             if 'Not a directory' in str(e) or 'Неверно задано имя папки' in str(e):
-                path = os.path.abspath(path)
+                path = os.path.abspath(file_path)
                 return send_file(path, as_attachment=True)
             print(e)
             return {'status': str(e)}, 400
