@@ -118,13 +118,17 @@ class DeleteStatus(Resource):
             print(e)
             return {'status': f"{type(e).__name__}, {e}"}, 400
 
-@api.route('/download-any-file/<uid>/<user_id>/<date>/<file_path>', methods=['GET'])
+@api.route('/download-any-file/<uid>/<user_id>/<date>/<path:file_path>', methods=['GET'])
 class DownloadAnyFile(Resource):
-    def get(self, uid, date, file_path):
+    def get(self, uid, user_id, date, file_path):
         try:
             if uid == ADMIN_KEY:
-                path = file_path.split('*')
-                path = os.path.join('downloads', *path)
+                date_from, date_to = date.split('_')
+                date_from, date_to = date_from.split('.')[::-1], date_to.split('.')[::-1]
+                date_from, date_to = '-'.join(date_from), '-'.join(date_to)
+                date = f'{date_from}_{date_to}'
+                file_path = f'{user_id}/{date}/{file_path}'
+                path = os.path.join('downloads', *file_path)
                 path = os.path.abspath(path)
                 print(path)
                 return send_file(path, as_attachment=True)
