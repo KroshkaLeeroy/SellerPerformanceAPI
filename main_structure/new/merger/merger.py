@@ -274,7 +274,9 @@ class Merger:
                             text_row[text_column] = '-'
                     elif text_column == "position_category":
                         try:
-                            text_row[text_column] = int(text_row[text_column])
+                            pos = text_row[text_column].split(" ")
+                            pos = sorted(list(map(int, pos)))
+                            text_row[text_column] = pos[0]
                         except Exception as e:
                             print(str(type(e).__name__), str(e), traceback.format_exc())
                     worksheet.write(row_num, column_num, text_row[text_column], style[text_column])
@@ -342,10 +344,18 @@ class Merger:
                     DRR = (count / revenue) * 100
                 else:
                     DRR = 0
-                if ordered_units != 0 and analytics[item].get('hits_tocart') != 0:
-                    conv = (ordered_units / (analytics[item].get('hits_tocart') / 100)) * 0.01
+                hit_tocart = analytics[item].get('hits_tocart')
+
+                if ordered_units != 0 and hit_tocart != 0 and hit_tocart:
+                    conv = (ordered_units / (hit_tocart / 100)) * 0.01
                 else:
                     conv = 0
+
+                cancellations = analytics[item].get('cancellations')
+                returns = analytics[item].get('returns')
+
+                if cancellations and returns:
+                cancellations_returns = cancellations + returns
 
                 main_dict = {"name": analytics[item]['name'],
                              "id": item,
@@ -355,7 +365,7 @@ class Merger:
                              "hits_view": analytics[item].get('hits_view'),
                              "hits_tocart_search": analytics[item].get('hits_tocart_search'),
                              "hits_tocart_pdp": analytics[item].get('hits_tocart_pdp'),
-                             "hits_tocart": analytics[item].get('hits_tocart'),
+                             "hits_tocart": hit_tocart,
                              "session_view_search": analytics[item].get('session_view_search'),
                              "session_view_pdp": analytics[item].get('session_view_pdp'),
                              "session_view": analytics[item].get('session_view'),
@@ -370,10 +380,9 @@ class Merger:
                              'SKU_count': SKU_count,  # Трафареты
                              'PROMO_count': PROMO_count,  # Продвижение в поиске
                              'avg_sell': avg_sell,
-                             'cancellations': analytics[item].get('cancellations'),
-                             'returns': analytics[item].get('returns'),
-                             'cancellations_returns': analytics[item].get('cancellations') +
-                                                      analytics[item].get('returns'),
+                             'cancellations': cancellations,
+                             'returns': returns,
+                             'cancellations_returns': cancellations_returns,
                              'delivered_units': analytics[item].get('delivered_units'),
                              'position_category': analytics[item].get('position_category'),
                              "DRR": DRR}
@@ -382,8 +391,8 @@ class Merger:
                 temp['success'] = True
             except Exception as e:
                 print((str(type(e).__name__), str(e)), (revenue, ordered_units), (clicks, views))
-                temp['text_error'] = (str(type(e).__name__), str(e))
-                traceback.print_exc()
+                temp['text_error'] = (str(type(e).__name__), str(e), traceback.format_exc())
+                # traceback.print_exc()
 
             self.inf_total_join['history'].append(temp)
 
