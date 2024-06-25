@@ -274,9 +274,10 @@ class Merger:
                             text_row[text_column] = '-'
                     elif text_column == "position_category":
                         try:
-                            pos = text_row[text_column].split(" ")
-                            pos = sorted(list(map(int, pos)))
-                            text_row[text_column] = pos[0]
+                            if text_row[text_column]:
+                                pos = text_row[text_column].split(" ")
+                                pos = sorted(list(map(int, pos)))
+                                text_row[text_column] = pos[0]
                         except Exception as e:
                             print(str(type(e).__name__), str(e), traceback.format_exc())
                     worksheet.write(row_num, column_num, text_row[text_column], style[text_column])
@@ -355,7 +356,9 @@ class Merger:
                 returns = analytics[item].get('returns')
 
                 if cancellations and returns:
-                cancellations_returns = cancellations + returns
+                    cancellations_returns = cancellations + returns
+                else:
+                    cancellations_returns = 0
 
                 main_dict = {"name": analytics[item]['name'],
                              "id": item,
