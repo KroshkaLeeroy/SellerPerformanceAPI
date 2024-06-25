@@ -128,7 +128,7 @@ class DownloadAnyFile(Resource):
                 date_from, date_to = '-'.join(date_from), '-'.join(date_to)
                 date = f'{date_from}_{date_to}'
                 file_path = f'{user_id}/{date}/{file_path}'
-                path = os.path.join('downloads', *file_path)
+                path = os.path.join('downloads', file_path)
                 path = os.path.abspath(path)
                 print(path)
                 return send_file(path, as_attachment=True)
