@@ -77,7 +77,7 @@ class DownloadReport(Resource):
             return {'status': 'bad request'}, 400
 
 
-@api.route('/<uid>/<path>', methods=['GET'])
+@api.route('/dev/<uid>/<path>', methods=['GET'])
 class PathFiles(Resource):
     def get(self, uid, path):
         try:
