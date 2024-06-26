@@ -201,7 +201,7 @@ class Merger:
                 'Отмены и\nвозвраты': (65, ['Z1', '=SUM(Z3:Z100000)', number_cell_format],),
                 'Доставлено\nтоваров': (65, ['AA1', '=SUM(AA3:AA100000)', number_cell_format],),
                 'Рейтинг\nтовара': (60, ['AB1', '=AVERAGEIF(AB3:AB100000, ">0")', number_cell_format],),
-                'ДРР\n%': (60, ['AC1', '=AVERAGEIF(AC3:AC100000, ">0")', DRR_cell_format],),
+                'ДРР\n%': (60, ['AC1', '=(U1 + V1)/T1 * 100', DRR_cell_format],),
                 'Комментарий': (500, ["", "", ""])
             }
 
@@ -264,7 +264,7 @@ class Merger:
                         'returns': number_cell_format,
                         'cancellations_returns': number_cell_format,
                         'delivered_units': number_cell_format,
-                        'position_category': number_cell_format,
+                        'position_category': summary_cell_format,
                         'DRR': DRR_column_cell_format,
                         'comment': name_cell_format,
                     }
