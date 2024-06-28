@@ -73,6 +73,8 @@ class Merger:
         self.inf_transform_data = {
             'get_reports_success': status,
             'get_reports_success_2': status_2,
+            'get_reports_error_text': info if not status else '',
+            'get_reports_error_text_2': info_2 if not status_2 else '',
             'join_reports_success': False,
             'create_report_success': False,
         }
@@ -276,7 +278,7 @@ class Merger:
                         try:
                             if text_row[text_column]:
                                 pos = text_row[text_column].split(" ")
-                                pos = sorted(list(map(int, pos)))
+                                pos = sorted([int(x) if x else 0 for x in pos])
                                 text_row[text_column] = pos[0]
                         except Exception as e:
                             print(str(type(e).__name__), str(e), traceback.format_exc())

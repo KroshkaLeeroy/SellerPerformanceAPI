@@ -44,7 +44,7 @@ def get_analytics(date_from, date_to, seller_id, seller_api_key, metrics=None):
             return False, result.text
     except Exception as e:
         print((str(type(e).__name__), str(e), result.json()))
-        return False, str(type(e).__name__, str(e), result.json())
+        return False, (str(type(e).__name__), str(e), result.json())
 
 
 def update_metrics(data_dict, metrics, metric_names):
