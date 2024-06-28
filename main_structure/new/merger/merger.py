@@ -45,7 +45,7 @@ class Merger:
             'date': self.date,
         }
         write_json(self.inf_initial_data, os.path.join(self.stats_folder_path, '1_initial.json'))
-        self.inf_total_process = None
+        self.inf_total_process = {'history': [],}
 
         self.inf_transform_data = {}
 
